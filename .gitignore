@@ -54,3 +54,4 @@ celerybeat.pid
 # Database
 *.db
 *.sqlite3
+CLAUDE.md
