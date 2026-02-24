@@ -4,6 +4,7 @@ import { Geist_Mono } from "next/font/google";
 import { Toaster } from "sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppShell } from "@/components/layout/app-shell";
+import { WebSocketProvider } from "@/lib/hooks/use-websocket";
 import "./globals.css";
 
 const inter = Inter({
@@ -31,10 +32,12 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${geistMono.variable} font-sans antialiased`}
       >
-        <TooltipProvider>
-          <AppShell>{children}</AppShell>
-          <Toaster theme="dark" position="bottom-right" richColors />
-        </TooltipProvider>
+        <WebSocketProvider>
+          <TooltipProvider>
+            <AppShell>{children}</AppShell>
+            <Toaster theme="dark" position="bottom-right" richColors />
+          </TooltipProvider>
+        </WebSocketProvider>
       </body>
     </html>
   );

@@ -2,14 +2,26 @@
 
 import useSWR from "swr";
 import { fetchApi, fetcher } from "@/lib/api";
+import { useWebSocket, useWebSocketEvent } from "@/lib/hooks/use-websocket";
 import type { ApiResponse, Service } from "@/types";
 
+const POLL_INTERVAL = 60000;
+
 export function useServices() {
+  const { connected } = useWebSocket();
   const { data, error, isLoading, mutate } = useSWR<ApiResponse<Service[]>>(
     "/api/v1/services",
     fetcher,
-    { revalidateOnFocus: false, dedupingInterval: 60000 }
+    {
+      revalidateOnFocus: false,
+      dedupingInterval: 60000,
+      refreshInterval: connected ? 0 : POLL_INTERVAL,
+    }
   );
+
+  useWebSocketEvent("service_update", () => {
+    mutate();
+  });
 
   return {
     services: data?.data ?? [],
@@ -26,6 +38,10 @@ export function useService(serviceId: string) {
     fetcher,
     { revalidateOnFocus: false }
   );
+
+  useWebSocketEvent("service_update", () => {
+    mutate();
+  });
 
   return {
     service: data?.data ?? null,

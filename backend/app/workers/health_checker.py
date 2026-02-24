@@ -85,3 +85,7 @@ async def _check_health() -> None:
 
         await session.commit()
         logger.info("Health check complete for %d services", len(services))
+
+    from app.websocket.events import publish_event
+
+    publish_event("service_update")

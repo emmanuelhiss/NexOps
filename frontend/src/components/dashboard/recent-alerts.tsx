@@ -1,11 +1,9 @@
 "use client";
 
-import useSWR from "swr";
-import { fetcher } from "@/lib/api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StatusBadge } from "@/components/common/status-badge";
 import { TableSkeleton } from "@/components/common/loading-skeleton";
-import type { Alert, ApiResponse } from "@/types";
+import { useAlerts } from "@/lib/hooks/use-alerts";
 
 const severityBorder: Record<string, string> = {
   critical: "border-l-destructive",
@@ -14,13 +12,9 @@ const severityBorder: Record<string, string> = {
 };
 
 export function RecentAlerts() {
-  const { data, isLoading, error } = useSWR<ApiResponse<Alert[]>>(
-    "/api/v1/alerts?status=firing",
-    fetcher,
-    { refreshInterval: 30000, revalidateOnFocus: false }
-  );
+  const { alerts: allAlerts, isLoading, error } = useAlerts("firing");
 
-  const alerts = data?.data?.slice(0, 10) ?? [];
+  const alerts = allAlerts.slice(0, 10);
 
   if (isLoading) {
     return (

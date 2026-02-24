@@ -23,7 +23,10 @@ async def _sync() -> None:
     """Run the async infrastructure sync."""
     from app.database import async_session_maker
     from app.services.infrastructure import InfrastructureService
+    from app.websocket.events import publish_event
 
     async with async_session_maker() as session:
         service = InfrastructureService(session)
         await service.sync_nodes_and_vms()
+
+    publish_event("infra_update")

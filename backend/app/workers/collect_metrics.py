@@ -23,7 +23,11 @@ async def _collect() -> None:
     """Run the async metrics collection."""
     from app.database import async_session_maker
     from app.services.metrics import MetricsService
+    from app.websocket.events import publish_event
 
     async with async_session_maker() as session:
         service = MetricsService(session)
         await service.collect_vm_metrics()
+
+    publish_event("metrics_update")
+    publish_event("alert_update")

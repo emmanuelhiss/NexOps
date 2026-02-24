@@ -1,6 +1,5 @@
 "use client";
 
-import useSWR from "swr";
 import {
   Table,
   TableBody,
@@ -13,8 +12,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { StatusBadge } from "@/components/common/status-badge";
 import { TableSkeleton } from "@/components/common/loading-skeleton";
-import { fetcher } from "@/lib/api";
-import type { Alert, AlertRule, ApiResponse } from "@/types";
+import { useAlerts, useAlertRules } from "@/lib/hooks/use-alerts";
 
 const severityLeftBorder: Record<string, string> = {
   critical: "border-l-[3px] border-l-destructive",
@@ -23,16 +21,8 @@ const severityLeftBorder: Record<string, string> = {
 };
 
 export default function AlertsPage() {
-  const { data: alertsData, isLoading: alertsLoading } = useSWR<
-    ApiResponse<Alert[]>
-  >("/api/v1/alerts", fetcher, { refreshInterval: 30000 });
-
-  const { data: rulesData, isLoading: rulesLoading } = useSWR<
-    ApiResponse<AlertRule[]>
-  >("/api/v1/alerts/rules", fetcher);
-
-  const alerts = alertsData?.data ?? [];
-  const rules = rulesData?.data ?? [];
+  const { alerts, isLoading: alertsLoading } = useAlerts();
+  const { rules, isLoading: rulesLoading } = useAlertRules();
 
   return (
     <div className="space-y-6">

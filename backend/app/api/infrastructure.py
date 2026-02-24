@@ -103,6 +103,10 @@ async def start_vm(
     result = await service.start_vm(vm.node.proxmox_node_name, vm.vmid)
     if result is None:
         raise HTTPException(status_code=503, detail="Failed to start VM")
+
+    from app.websocket.events import publish_event
+
+    publish_event("vm_action_complete", {"vm_id": str(vm_id), "vmid": vm.vmid, "action": "start"})
     return {"data": {"status": "starting", "task": result}, "meta": {"timestamp": datetime.now(timezone.utc).isoformat()}}
 
 
@@ -118,6 +122,10 @@ async def stop_vm(
     result = await service.stop_vm(vm.node.proxmox_node_name, vm.vmid)
     if result is None:
         raise HTTPException(status_code=503, detail="Failed to stop VM")
+
+    from app.websocket.events import publish_event
+
+    publish_event("vm_action_complete", {"vm_id": str(vm_id), "vmid": vm.vmid, "action": "stop"})
     return {"data": {"status": "stopping", "task": result}, "meta": {"timestamp": datetime.now(timezone.utc).isoformat()}}
 
 
@@ -133,4 +141,8 @@ async def restart_vm(
     result = await service.restart_vm(vm.node.proxmox_node_name, vm.vmid)
     if result is None:
         raise HTTPException(status_code=503, detail="Failed to restart VM")
+
+    from app.websocket.events import publish_event
+
+    publish_event("vm_action_complete", {"vm_id": str(vm_id), "vmid": vm.vmid, "action": "restart"})
     return {"data": {"status": "restarting", "task": result}, "meta": {"timestamp": datetime.now(timezone.utc).isoformat()}}
