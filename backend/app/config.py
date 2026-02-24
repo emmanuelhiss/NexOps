@@ -26,7 +26,7 @@ class Settings(BaseSettings):
     proxmox_port: int = 8006
     proxmox_user: str = "nexops@pve"
     proxmox_token_name: str = "nexops"
-    proxmox_token_value: str  # Required — must be set in .env
+    proxmox_token_value: str = ""  # Required — must be set in .env
     proxmox_verify_ssl: bool = False
 
     # CORS

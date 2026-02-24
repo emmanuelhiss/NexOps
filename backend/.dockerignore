@@ -1,0 +1,9 @@
+.venv
+**/__pychche__
+tests/
+.env
+.git
+*.log
+Dockerfile
+.dockerignore
+celerybeat-schedule
